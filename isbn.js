@@ -2,12 +2,10 @@
 // between ISBN10 and ISBN13
 // if isbn is a number, check if it is a valid ISBN10 or ISBN13
 
-
 function isValidISBN(isbn) {
-
   // Initialize the result variable to false
   var result = false;
-  
+
   if (isbn != null) {
     // Replace all unwanted characters with an empty string
     isbn = isbn.replace(/-/g, "");
@@ -40,13 +38,18 @@ function isValidISBN10(isbn) {
     for (var i = 0; i < 9; i++) {
       sum += isbn[i] * (i + 1);
     }
+
+    // replace X with 10
     sum += isbn[9] == "X" ? 10 : isbn[9] * 10;
     result = sum % 11 == 0;
 
-    // remove the check digits from the length of the ISBN string 
+    // remove the check digits from the length of the ISBN string
+    // substring the ISBN string from the index of the first digit to the last digit
+    //substring is used to get the first and last digit of the ISBN string
     isbn = isbn.substring(0, isbn.length - 1);
     // convert the ISBN to ISBN13 format by adding 978 to the front
-    convertedISBN = "978" + isbn + convertISBN10toISBN13("978" + isbn)
+    // convertISBN10toISBN13(isbn) is called to convert the ISBN10 to ISBN13
+    convertedISBN = "978" + isbn + convertISBN10toISBN13("978" + isbn);
     document.getElementById("result").innerText = convertedISBN;
     document.getElementById("boolean").innerText = result;
   }
@@ -61,18 +64,21 @@ function isValidISBN13(isbn) {
   if (!isNaN(isbn)) {
     var index = 0;
     var sum = 0;
-
+    // Loop through the ISBN13 string .length times
     for (var i = 0; i < length; i++) {
+      // if the index is odd, multiply the number by 3 or 1 depending on the number
+      // helper function isOddNumber() is called to determine if the index is odd
       sum += isbn[i] * (isOddNumber(index) ? 3 : 1);
     }
+
+    // Check if the sum is divisible by 10
     result = sum % 10 == 0;
-     document.getElementById("boolean").innerText = result;
+    document.getElementById("boolean").innerText = result;
   }
   return result;
 }
 
-
-// helper function to determine if the index is odd 
+// helper function to determine if the index is odd
 function isOddNumber(number) {
   // return number % 2 == 1;
   return number % 2 != 0;
@@ -89,15 +95,9 @@ function convertISBN10toISBN13(isbn10) {
     oddIndex = !oddIndex;
   }
 
+  // Get the remainder of the sum divided by 10
   newISBN13 = (10 - (sum % 10)) % 10;
   return newISBN13;
 }
 
 // function toISBN13(isbn10) {}
-
-
-
-
-console.log(isValidISBN("0330301824"));
-
-	module.exports = isValidISBN;
